@@ -1,0 +1,106 @@
+import React, { useEffect, useState } from "react";
+import { Container, Row, Col, Button, Image } from "react-bootstrap";
+
+const Pokemon = () => {
+	const [pokemon, setPokemon] = useState();
+	const [pokemon2, setPokemon2] = useState();
+	const [randomStat, setRandomStat] = useState();
+	const stats = [
+		"Hitpoints",
+		"Attack",
+		"Defense",
+		"Special attack",
+		"Special defence",
+		"Speed",
+	];
+
+	const typeColors = {
+		normal: "#A8A77A",
+		fire: "#EE8130",
+		water: "#6390F0",
+		electric: "#F7D02C",
+		grass: "#7AC74C",
+		ice: "#96D9D6",
+		fighting: "#C22E28",
+		poison: "#A33EA1",
+		ground: "#E2BF65",
+		flying: "#A98FF3",
+		psychic: "#F95587",
+		bug: "#A6B91A",
+		rock: "#B6A136",
+		ghost: "#735797",
+		dragon: "#6F35FC",
+		dark: "#705746",
+		steel: "#B7B7CE",
+		fairy: "#D685AD",
+	};
+
+	const fetchPokemon = async () => {
+		const random = Math.floor(Math.random() * 150);
+		const random2 = Math.floor(Math.random() * 150);
+		console.log(random);
+		setRandomStat(Math.floor(Math.random() * 6));
+
+		const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${random}`);
+		const result = await response.json();
+
+		const response2 = await fetch(
+			`https://pokeapi.co/api/v2/pokemon/${random2}`,
+		);
+		const result2 = await response2.json();
+		setPokemon(result);
+		setPokemon2(result2);
+		console.log(result);
+		console.log(result2);
+	};
+
+	useEffect(() => {
+		fetchPokemon();
+	}, []);
+
+	return (
+		<div>
+			{pokemon && (
+				<Container className="mt-5 ">
+					<Row className="gap-2">
+						<h3>Which one has higher {stats[randomStat]}?</h3>
+						<Col>
+							<Row>
+								<Col
+									className="border border-2 border-black rounded "
+									style={{
+										backgroundColor: `${typeColors[pokemon.types[0].type.name]}`,
+									}}
+									onClick={() => fetchPokemon()}
+								>
+									<h2 variant="primary">{pokemon.name}</h2>
+									<Image src={pokemon.sprites.front_default}></Image>
+									<h5>{pokemon.stats[randomStat].base_stat}</h5>
+								</Col>
+							</Row>
+						</Col>
+						<Col>
+							<Row>
+								<Col
+									className="border border-2 border-black rounded "
+									style={{
+										backgroundColor: `${typeColors[pokemon2.types[0].type.name]}`,
+									}}
+									onClick={() => fetchPokemon()}
+								>
+									<h2 variant="primary">{pokemon2.name}</h2>
+									<Image src={pokemon2.sprites.front_default}></Image>
+									<h5>{pokemon2.stats[randomStat].base_stat}</h5>
+								</Col>
+							</Row>
+						</Col>
+						<h3>Score: </h3>
+						<h3>Health: </h3>
+					</Row>
+				</Container>
+			)}
+		</div>
+	);
+};
+
+export default Pokemon;
