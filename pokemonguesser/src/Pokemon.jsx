@@ -13,6 +13,9 @@ const Pokemon = () => {
 		"Special defence",
 		"Speed",
 	];
+	const [score, setScore] = useState(0);
+	const [lives, setLives] = useState(3);
+	const [correct, setCorrect] = useState(null);
 
 	const typeColors = {
 		normal: "#A8A77A",
@@ -36,22 +39,52 @@ const Pokemon = () => {
 	};
 
 	const fetchPokemon = async () => {
+		if (lives <= 0) return;
 		const random = Math.floor(Math.random() * 150);
 		const random2 = Math.floor(Math.random() * 150);
 		console.log(random);
 		setRandomStat(Math.floor(Math.random() * 6));
 
-		const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${random}`);
+		const response = await fetch(
+			`http://localhost:7071/api/GetPokemon2/${random}`,
+		);
 		const result = await response.json();
 
 		const response2 = await fetch(
-			`https://pokeapi.co/api/v2/pokemon/${random2}`,
+			`http://localhost:7071/api/GetPokemon2/${random2}`,
 		);
 		const result2 = await response2.json();
 		setPokemon(result);
 		setPokemon2(result2);
 		console.log(result);
 		console.log(result2);
+	};
+
+	const checkAnswers = async (answer) => {
+		if (lives <= 0) return;
+
+		const response = await fetch(
+			`http://localhost:7071/api/CheckAnswer?name=${pokemon.name}&name2=${pokemon2.name}&answer=${answer}&stat=${randomStat}`,
+		);
+		const result = await response.json();
+		console.log(result[2]);
+
+		console.log(result[2].correct);
+
+		if (result[2].correct == true) {
+			setScore(score + 1);
+			setCorrect(true);
+		} else {
+			setLives(lives - 1);
+			setCorrect(false);
+		}
+
+		await new Promise((resolve) => setTimeout(resolve, 2000));
+
+		setCorrect(null);
+
+		if (lives == 1 && result[2].correct == false) return;
+		fetchPokemon();
 	};
 
 	useEffect(() => {
@@ -61,41 +94,80 @@ const Pokemon = () => {
 	return (
 		<div>
 			{pokemon && (
-				<Container className="mt-5 ">
+				<Container className="mt-5 w-75 ">
 					<Row className="gap-2">
 						<h3>Which one has higher {stats[randomStat]}?</h3>
 						<Col>
 							<Row>
 								<Col
-									className="border border-2 border-black rounded "
+									className="border border-2 border-black rounded pokemon-card"
 									style={{
 										backgroundColor: `${typeColors[pokemon.types[0].type.name]}`,
 									}}
-									onClick={() => fetchPokemon()}
+									onClick={() => checkAnswers(1)}
 								>
 									<h2 variant="primary">{pokemon.name}</h2>
 									<Image src={pokemon.sprites.front_default}></Image>
-									<h5>{pokemon.stats[randomStat].base_stat}</h5>
+									{correct != null ? (
+										<h5>{pokemon.stats[randomStat].base_stat}</h5>
+									) : (
+										<h5>{"\u00A0"}</h5>
+									)}{" "}
 								</Col>
 							</Row>
 						</Col>
 						<Col>
 							<Row>
 								<Col
-									className="border border-2 border-black rounded "
+									className="border border-2 border-black rounded pokemon-card"
 									style={{
 										backgroundColor: `${typeColors[pokemon2.types[0].type.name]}`,
 									}}
-									onClick={() => fetchPokemon()}
+									onClick={() => checkAnswers(2)}
 								>
 									<h2 variant="primary">{pokemon2.name}</h2>
 									<Image src={pokemon2.sprites.front_default}></Image>
-									<h5>{pokemon2.stats[randomStat].base_stat}</h5>
+									{correct != null ? (
+										<h5>{pokemon2.stats[randomStat].base_stat}</h5>
+									) : (
+										<h5>{"\u00A0"}</h5>
+									)}{" "}
 								</Col>
 							</Row>
 						</Col>
-						<h3>Score: </h3>
-						<h3>Health: </h3>
+						{lives >= 1 ? (
+							<Row className="d-flex my-3">
+								<Col>
+									{" "}
+									<h3>Score: {score} </h3>
+								</Col>
+								<Col>
+									{" "}
+									<h3>Health: {lives} </h3>
+								</Col>
+								<Col>
+									{correct == true && <h3>Correct!</h3>}
+									{correct == false && <h3>Wrong!</h3>}
+									{correct == null && <h3> </h3>}
+								</Col>
+							</Row>
+						) : (
+							<Row>
+								<Col>
+									{" "}
+									<h3>Game over !</h3>
+									<h5>Final score: {score}</h5>
+									<Button
+										onClick={() => {
+											setLives(3);
+											fetchPokemon();
+										}}
+									>
+										Play again
+									</Button>{" "}
+								</Col>
+							</Row>
+						)}
 					</Row>
 				</Container>
 			)}

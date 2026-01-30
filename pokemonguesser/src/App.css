@@ -18,6 +18,19 @@
 	filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
+.pokemon-card {
+}
+
+.pokemon-card:hover {
+	transform: scale(1.025);
+	opacity: calc(0.9);
+}
+
+.pokemon-card-disabled {
+	pointer-events: none;
+	opacity: calc(0.8);
+}
+
 @keyframes logo-spin {
 	from {
 		transform: rotate(0deg);
