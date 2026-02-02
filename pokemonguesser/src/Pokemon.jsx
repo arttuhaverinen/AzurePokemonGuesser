@@ -21,6 +21,9 @@ const Pokemon = () => {
 	const [lives, setLives] = useState(3);
 	const [correct, setCorrect] = useState(null);
 
+	const [nickname, setNickname] = useState("");
+	const [finalScore, setFinalScore] = useState();
+
 	const typeColors = {
 		normal: "#A8A77A",
 		fire: "#EE8130",
@@ -58,6 +61,33 @@ const Pokemon = () => {
 		setPokemon2(result2);
 		console.log(result);
 		console.log(result2);
+	};
+
+	const saveToHighscores = async (nickname, score) => {
+		console.log("saving to highscores");
+
+		if (nickname == "" || nickname == null) {
+			console.log("nickname error");
+			return;
+		}
+		if (score <= 0) {
+			console.log("score error");
+			return;
+		}
+
+		console.log("saving to highscores123");
+
+		const response = await fetch(
+			"https://pokemonguesserapi-b4a3e6edf0cyczb4.westeurope-01.azurewebsites.net/api/addhighscore",
+			{
+				method: "POST",
+				body: JSON.stringify({ nickname: nickname, score: score }),
+			},
+		);
+		const text = await response.text();
+
+		setLives(3);
+		setScore(0);
 	};
 
 	const checkAnswers = async (answer) => {
@@ -169,14 +199,25 @@ const Pokemon = () => {
 										Play again
 									</Button>{" "}
 									<hr />
-									<Form className="w-50 mx-auto">
+									<Form
+										onSubmit={(e) => {
+											e.preventDefault();
+											saveToHighscores(nickname, score);
+										}}
+										className="w-50 mx-auto"
+									>
 										<Form.Group className="mb-3" controlId="formBasicEmail">
 											<Form.Label>Nickname</Form.Label>
-											<Form.Control type="text" placeholder="Enter nickname" />
+											<Form.Control
+												type="text"
+												placeholder="Enter nickname"
+												value={nickname}
+												onChange={(e) => setNickname(e.target.value)}
+											/>
 										</Form.Group>
 
 										<Button variant="primary" className="w-100" type="submit">
-											Save to highscores
+											Save to highscores & Play again
 										</Button>
 									</Form>{" "}
 								</Col>
