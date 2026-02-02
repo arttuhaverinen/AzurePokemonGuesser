@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Button, Image, Form } from "react-bootstrap";
 const BASEURL = import.meta.env.VITE_BASEURL;
+const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI;
 
 const Pokemon = () => {
+	console.log(BASEURL);
+	console.log(REDIRECT_URI);
 	const [pokemon, setPokemon] = useState();
 	const [pokemon2, setPokemon2] = useState();
 	const [randomStat, setRandomStat] = useState();
