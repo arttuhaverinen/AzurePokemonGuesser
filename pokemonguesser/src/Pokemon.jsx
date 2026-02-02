@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Button, Image, Form } from "react-bootstrap";
+const BASEURL = import.meta.env.VITE_BASEURL;
 
 const Pokemon = () => {
 	const [pokemon, setPokemon] = useState();
@@ -45,14 +46,10 @@ const Pokemon = () => {
 		console.log(random);
 		setRandomStat(Math.floor(Math.random() * 6));
 
-		const response = await fetch(
-			`http://localhost:7071/api/GetPokemon2/${random}`,
-		);
+		const response = await fetch(`${BASEURL}/api/GetPokemon2/${random}`);
 		const result = await response.json();
 
-		const response2 = await fetch(
-			`http://localhost:7071/api/GetPokemon2/${random2}`,
-		);
+		const response2 = await fetch(`${BASEURL}/api/GetPokemon2/${random2}`);
 		const result2 = await response2.json();
 		setPokemon(result);
 		setPokemon2(result2);
@@ -66,7 +63,7 @@ const Pokemon = () => {
 		}
 
 		const response = await fetch(
-			`http://localhost:7071/api/CheckAnswer?name=${pokemon.name}&name2=${pokemon2.name}&answer=${answer}&stat=${randomStat}`,
+			`${BASEURL}/api/CheckAnswer?name=${pokemon.name}&name2=${pokemon2.name}&answer=${answer}&stat=${randomStat}`,
 		);
 		const result = await response.json();
 		console.log(result[2]);
