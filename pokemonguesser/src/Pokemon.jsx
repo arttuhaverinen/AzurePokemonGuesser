@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Container, Row, Col, Button, Image } from "react-bootstrap";
+import { Container, Row, Col, Button, Image, Form } from "react-bootstrap";
 
 const Pokemon = () => {
 	const [pokemon, setPokemon] = useState();
@@ -61,7 +61,9 @@ const Pokemon = () => {
 	};
 
 	const checkAnswers = async (answer) => {
-		if (lives <= 0) return;
+		if (lives <= 0) {
+			return;
+		}
 
 		const response = await fetch(
 			`http://localhost:7071/api/CheckAnswer?name=${pokemon.name}&name2=${pokemon2.name}&answer=${answer}&stat=${randomStat}`,
@@ -94,8 +96,8 @@ const Pokemon = () => {
 	return (
 		<div>
 			{pokemon && (
-				<Container className="mt-5 w-75 ">
-					<Row className="gap-2">
+				<Container className="mt-5 w-75  ">
+					<Row className="gap-2 w-100 mx-auto m-0 p-0">
 						<h3>Which one has higher {stats[randomStat]}?</h3>
 						<Col>
 							<Row>
@@ -136,7 +138,7 @@ const Pokemon = () => {
 							</Row>
 						</Col>
 						{lives >= 1 ? (
-							<Row className="d-flex my-3">
+							<Row className="d-flex w-100 mx-0 bg-success p-3 border border-2 border-black rounded">
 								<Col>
 									{" "}
 									<h3>Score: {score} </h3>
@@ -152,19 +154,31 @@ const Pokemon = () => {
 								</Col>
 							</Row>
 						) : (
-							<Row>
-								<Col>
+							<Row className="bg-warning mx-0 p-3 border border-2 border-black rounded">
+								<Col className="">
 									{" "}
 									<h3>Game over !</h3>
 									<h5>Final score: {score}</h5>
 									<Button
 										onClick={() => {
 											setLives(3);
+											setScore(0);
 											fetchPokemon();
 										}}
 									>
 										Play again
 									</Button>{" "}
+									<hr />
+									<Form className="w-50 mx-auto">
+										<Form.Group className="mb-3" controlId="formBasicEmail">
+											<Form.Label>Nickname</Form.Label>
+											<Form.Control type="text" placeholder="Enter nickname" />
+										</Form.Group>
+
+										<Button variant="primary" className="w-100" type="submit">
+											Save to highscores
+										</Button>
+									</Form>{" "}
 								</Col>
 							</Row>
 						)}
