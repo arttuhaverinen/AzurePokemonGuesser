@@ -20,29 +20,32 @@ const Highscores = () => {
 	}, []);
 
 	return (
-		<Row>
-			<Col className="my-3" xs={9}>
-				<h3 className="text-start">Highscores</h3>
+		<Row className="w-75 mx-auto">
+			<Col className="my-3" xs={3}>
+				<h3 className="text-center">Highscores</h3>
+			</Col>
+			<Col className="my-3" xs={6}>
+				<h3 className="text-center"></h3>
 			</Col>
 			<Col className="my-3" xs={3}>
 				<Button
 					onClick={() => fetchHighscores()}
-					className=" border btn btn-light"
+					className="border btn btn-light"
 				>
 					Refresh
 				</Button>
 			</Col>
-			<Row>
-				<Col>
+			<Row className="w-100">
+				<Col xs={3} className="">
 					<h4>#</h4>
 				</Col>
-				<Col>
+				<Col xs={3}>
 					<h4>Name</h4>
 				</Col>
-				<Col>
+				<Col xs={3}>
 					<h4>Score</h4>
 				</Col>
-				<Col>
+				<Col xs={3}>
 					<h4>Date</h4>
 				</Col>
 			</Row>

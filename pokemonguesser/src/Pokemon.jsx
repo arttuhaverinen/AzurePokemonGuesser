@@ -17,6 +17,16 @@ const Pokemon = () => {
 		"Special defence",
 		"Speed",
 	];
+
+	const statColors = {
+		Hitpoints: " #66BB6A",
+		Attack: " #EF5350",
+		Defense: " #42A5F5",
+		"Special attack": " #EC407A",
+		"Special defence": " #5C6BC0",
+		Speed: " #FFA726",
+	};
+
 	const [score, setScore] = useState(0);
 	const [lives, setLives] = useState(3);
 	const [correct, setCorrect] = useState(null);
@@ -124,12 +134,21 @@ const Pokemon = () => {
 	}, []);
 
 	return (
-		<div>
+		<div className="w-50 mx-auto">
 			{pokemon && (
-				<Container className="mt-5 w-75  ">
-					<Row className="gap-2 w-100 mx-auto m-0 p-0">
-						<h3>Which one has higher {stats[randomStat]}?</h3>
-						<Col>
+				<Container fluid="sm" className="mt-5">
+					<Row className=" mx-auto gap-1 ">
+						<h3>
+							Which one has higher{" "}
+							<b
+								style={{
+									color: `${statColors[pokemon.types[0].type.name]}`,
+								}}
+							>
+								{stats[randomStat]}?
+							</b>
+						</h3>
+						<Col className="">
 							<Row>
 								<Col
 									className="border border-2 border-black rounded pokemon-card"
@@ -148,7 +167,7 @@ const Pokemon = () => {
 								</Col>
 							</Row>
 						</Col>
-						<Col>
+						<Col className="">
 							<Row>
 								<Col
 									className="border border-2 border-black rounded pokemon-card"
@@ -169,15 +188,15 @@ const Pokemon = () => {
 						</Col>
 						{lives >= 1 ? (
 							<Row className="d-flex w-100 mx-0 bg-success p-3 border border-2 border-black rounded">
-								<Col>
+								<Col xs={12} md={4}>
 									{" "}
 									<h3>Score: {score} </h3>
 								</Col>
-								<Col>
+								<Col xs={12} md={4}>
 									{" "}
 									<h3>Health: {lives} </h3>
 								</Col>
-								<Col>
+								<Col xs={12} md={4}>
 									{correct == true && <h3>Correct!</h3>}
 									{correct == false && <h3>Wrong!</h3>}
 									{correct == null && <h3> </h3>}
