@@ -44,10 +44,17 @@ function App() {
 		<Router>
 			<div className="w-100">
 				<Row className="w-100 mx-0 p-0 border-bottom border-black">
-					<Col xs={8} className="start-0">
-						<h2 className="text-start">PokemonGuesser</h2>{" "}
+					<Col xs={12} md={4} className="text-center">
+						<Link to={"/"}>
+							<h2 className="text-center">PokemonGuesser</h2>{" "}
+						</Link>
 					</Col>
-					<Col xs={4}>
+					<Col xs={12} md={4} className="start-0">
+						<Link to={"/Highscores"}>
+							<h2 className="text-center">Highscores</h2>{" "}
+						</Link>
+					</Col>
+					<Col xs={12} md={4}>
 						{" "}
 						{!isLoggedIn ? (
 							<div>
@@ -64,17 +71,23 @@ function App() {
 								</Button>
 							</div>
 						) : (
-							<h3> {username ? username : null}</h3>
+							<Button
+								className="my-1"
+								onClick={() =>
+									instance.logoutRedirect({
+										postLogoutRedirectUri: "/",
+									})
+								}
+							>
+								Logout
+							</Button>
 						)}{" "}
 					</Col>
 				</Row>
-
-				<Pokemon />
 			</div>
-			<Row className="my-5 border-top border-black">
-				<Highscores />
-			</Row>
+			<Row className="my-5"></Row>
 			<Routes>
+				<Route path="/" element={<Pokemon />} />
 				<Route path="/Highscores" element={<Highscores />} />
 			</Routes>
 		</Router>
