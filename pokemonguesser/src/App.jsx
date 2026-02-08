@@ -3,6 +3,7 @@ import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
 const VITE_CLIENT_ID = import.meta.env.VITE_CLIENT_ID;
+const BASEURL = import.meta.env.VITE_BASEURL;
 
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
@@ -49,7 +50,10 @@ function App() {
 			account: accounts[0],
 		});
 		console.log("tokenresponse", tokenResponse);
-		const res = await fetch("http://localhost:7071/api/profile", {
+		const res = await fetch(`${BASEURL}/api/profile`, {
+			//const res = await fetch(
+			//	"https://pokemonguesserapi-b4a3e6edf0cyczb4.westeurope-01.azurewebsites.net/api/profile",
+			//	{
 			method: "GET",
 
 			headers: {
@@ -63,7 +67,7 @@ function App() {
 	return (
 		<Router>
 			<div className="w-100">
-				<Button onClick={() => testProtectedEndpoint()}>auth</Button>
+				<Button onClick={() => testProtectedEndpoint()}>auth test</Button>
 				<Row className="w-100 mx-0 p-0 border-bottom border-black">
 					<Col xs={12} md={4} className="text-center">
 						<Link to={"/"}>
