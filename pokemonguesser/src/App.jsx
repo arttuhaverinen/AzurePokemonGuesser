@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
+const VITE_CLIENT_ID = import.meta.env.VITE_CLIENT_ID;
 
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
@@ -40,9 +41,29 @@ function App() {
 			}
 		});
 	}, [instance, accounts]);
+
+	const testProtectedEndpoint = async () => {
+		console.log("accounts", accounts[0]);
+		const tokenResponse = await instance.acquireTokenSilent({
+			scopes: [`api://add80d4e-e2b7-4e51-815f-2617074979f6/user_impersonation`],
+			account: accounts[0],
+		});
+		console.log("tokenresponse", tokenResponse);
+		const res = await fetch("http://localhost:7071/api/profile", {
+			method: "GET",
+
+			headers: {
+				Authorization: `Bearer ${tokenResponse.accessToken}`,
+				"Content-Type": "application/json",
+			},
+		});
+		console.log(res);
+	};
+
 	return (
 		<Router>
 			<div className="w-100">
+				<Button onClick={() => testProtectedEndpoint()}>auth</Button>
 				<Row className="w-100 mx-0 p-0 border-bottom border-black">
 					<Col xs={12} md={4} className="text-center">
 						<Link to={"/"}>
