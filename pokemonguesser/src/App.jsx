@@ -9,15 +9,17 @@ import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
 import Pokemon from "./Pokemon";
 import Highscores from "./Highscores";
+import Profile from "./Profile";
 
 import { useMsal } from "@azure/msal-react";
-import { Col, Row, Button } from "react-bootstrap";
+import { Col, Row, Button, Image } from "react-bootstrap";
 
 function App() {
 	const { instance, accounts, inProgress } = useMsal();
 	const [count, setCount] = useState(0);
 	const isLoggedIn = accounts.length > 0;
 	const [username, setUsername] = useState();
+	const [firstname, setFirstName] = useState();
 	const [refresh, setRefresh] = useState(true);
 
 	useEffect(() => {
@@ -38,6 +40,8 @@ function App() {
 
 			if (displayName) {
 				console.log("Welcome,", displayName);
+				console.log(displayName.split(" ")[0]);
+				setFirstName(displayName.split(" ")[0]);
 				setUsername(displayName);
 			}
 		});
@@ -67,7 +71,6 @@ function App() {
 	return (
 		<Router>
 			<div className="w-100">
-				<Button onClick={() => testProtectedEndpoint()}>auth test</Button>
 				<Row className="w-100 mx-0 p-0 border-bottom border-black">
 					<Col xs={12} md={4} className="text-center">
 						<Link to={"/"}>
@@ -96,16 +99,38 @@ function App() {
 								</Button>
 							</div>
 						) : (
-							<Button
-								className="my-1"
-								onClick={() =>
-									instance.logoutRedirect({
-										postLogoutRedirectUri: "/",
-									})
-								}
-							>
-								Logout
-							</Button>
+							<Row className="align-items-center">
+								<Col xs={3}>
+									<Image
+										className="my-1"
+										src="https://placehold.co/50x50"
+										roundedCircle
+									/>
+								</Col>
+								<Col xs={3}>
+									<Link to={"/Profile"} state={{ username: username }}>
+										<h3 className="text-center">{firstname}</h3>{" "}
+									</Link>{" "}
+								</Col>
+								<Col xs={6}>
+									<Button
+										className="my-1"
+										onClick={() =>
+											instance.logoutRedirect({
+												postLogoutRedirectUri: "/",
+											})
+										}
+									>
+										Logout
+									</Button>
+									<Button
+										className="mx-1"
+										onClick={() => testProtectedEndpoint()}
+									>
+										auth test
+									</Button>
+								</Col>
+							</Row>
 						)}{" "}
 					</Col>
 				</Row>
@@ -114,6 +139,7 @@ function App() {
 			<Routes>
 				<Route path="/" element={<Pokemon />} />
 				<Route path="/Highscores" element={<Highscores />} />
+				<Route path="/Profile" element={<Profile />} />
 			</Routes>
 		</Router>
 	);
