@@ -19,30 +19,56 @@ app.http("UploadImage", {
 			const accountKey = process.env.STORAGE_ACCOUNT_KEY;
 			const blobStorage = process.env.AZURE_BLOB_STORAGE;
 
+			// Authenticate user
 			const credential = new StorageSharedKeyCredential(account, accountKey);
 
-			//client for the container
-			const blobServiceClient = new BlobServiceClient(
-				`https://${account}.blob.core.windows.net`,
-				credential,
-			);
+			const authHeader = request.headers.get("Authorization");
 
-			const containerClient = blobServiceClient.getContainerClient(blobStorage);
-			const blobClient = containerClient.getBlockBlobClient("user123.webp");
+			const JWKS = createRemoteJWKSet(new URL(process.env.JWKS_URL));
 
-			const arrayBuffer = await request.arrayBuffer();
-			const buffer = Buffer.from(arrayBuffer);
+			if (!authHeader || !authHeader.startsWith("Bearer ")) {
+				return { status: 401, body: "User not authenticated" };
+			}
+			const token = authHeader.split(" ")[1];
 
-			await blobClient.uploadData(buffer, {
-				blobHTTPHeaders: {
-					blobContentType:
-						request.headers.get("content-type") || "application/octet-stream",
-				},
-			});
-			return { status: 200, body: "ok" };
+			if (!authHeader || !authHeader.startsWith("Bearer ")) {
+				console.log("problem with token");
+				return { status: 401, body: "User not authenticated" };
+			}
+
+			try {
+				const { payload } = await jwtVerify(token, JWKS, {
+					issuer: process.env.AZURE_TENANT_ID,
+					audience: process.env.AZURE_CLIENT_ID,
+				});
+				// Upload image if authenticated
+				//return { body: JSON.stringify("verified user!") };
+
+				const blobServiceClient = new BlobServiceClient(
+					`https://${account}.blob.core.windows.net`,
+					credential,
+				);
+
+				const containerClient =
+					blobServiceClient.getContainerClient(blobStorage);
+				const blobClient = containerClient.getBlockBlobClient("user123.webp");
+
+				const arrayBuffer = await request.arrayBuffer();
+				const buffer = Buffer.from(arrayBuffer);
+
+				await blobClient.uploadData(buffer, {
+					blobHTTPHeaders: {
+						blobContentType:
+							request.headers.get("content-type") || "application/octet-stream",
+					},
+				});
+				return { status: 200, body: "ok" };
+			} catch (error) {
+				console.log(error);
+				return { status: 500, body: "Upload failed" };
+			}
 		} catch (error) {
-			console.log(error);
-			return { status: 500, body: "Upload failed" };
+			return { status: 401, body: JSON.stringify("unauthorized!") };
 		}
 
 		/*
