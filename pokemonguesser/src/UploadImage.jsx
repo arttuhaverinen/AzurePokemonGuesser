@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useMsal } from "@azure/msal-react";
+const BASEURL = import.meta.env.VITE_BASEURL;
 
 const UploadImage = () => {
 	const [file, setFile] = useState();
@@ -18,7 +19,7 @@ const UploadImage = () => {
 			console.log("file", file.type);
 		}
 
-		let res = await fetch("http://localhost:7071/api/uploadimage", {
+		let res = await fetch(`${BASEURL}/api/uploadimage`, {
 			method: "POST",
 			headers: {
 				Authorization: `Bearer ${tokenResponse.accessToken}`,
