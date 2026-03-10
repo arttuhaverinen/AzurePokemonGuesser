@@ -4,6 +4,7 @@ const {
 } = require("@azure/storage-blob");
 const { app } = require("@azure/functions");
 const { TableClient, AzureNamedKeyCredential } = require("@azure/data-tables");
+
 require("dotenv").config();
 const { jwtVerify, createRemoteJWKSet } = require("jose");
 require("dotenv").config();
@@ -13,14 +14,17 @@ app.http("UploadImage", {
 	authLevel: "anonymous",
 	route: "uploadimage",
 	handler: async (request, context) => {
+		const account = process.env.STORAGE_ACCOUNT_NAME;
+		const accountKey = process.env.STORAGE_ACCOUNT_KEY;
+		const blobStorage = process.env.AZURE_BLOB_STORAGE;
+		let username; // get this from payload after auth
+		let randomizedImageName;
+		const credential = new StorageSharedKeyCredential(account, accountKey);
+
 		try {
 			// Uploaded image must be binary for this to work
-			const account = process.env.STORAGE_ACCOUNT_NAME;
-			const accountKey = process.env.STORAGE_ACCOUNT_KEY;
-			const blobStorage = process.env.AZURE_BLOB_STORAGE;
 
 			// Authenticate user
-			const credential = new StorageSharedKeyCredential(account, accountKey);
 
 			const authHeader = request.headers.get("Authorization");
 
@@ -44,14 +48,23 @@ app.http("UploadImage", {
 				// Upload image if authenticated
 				//return { body: JSON.stringify("verified user!") };
 
+				console.log(payload);
+
+				username = payload.name;
+
 				const blobServiceClient = new BlobServiceClient(
 					`https://${account}.blob.core.windows.net`,
 					credential,
 				);
 
+				let randomizedName = `${username}-${Math.floor(Math.random() * 1000)}`;
+				randomizedImageName = randomizedName; // Save to use later with table storage
+
 				const containerClient =
 					blobServiceClient.getContainerClient(blobStorage);
-				const blobClient = containerClient.getBlockBlobClient("user123.webp");
+				const blobClient = containerClient.getBlockBlobClient(
+					`${randomizedName}.webp`,
+				);
 
 				const arrayBuffer = await request.arrayBuffer();
 				const buffer = Buffer.from(arrayBuffer);
@@ -62,13 +75,43 @@ app.http("UploadImage", {
 							request.headers.get("content-type") || "application/octet-stream",
 					},
 				});
-				return { status: 200, body: "ok" };
+
+				console.log("json ok");
+
+				console.log("blob upload ok");
 			} catch (error) {
 				console.log(error);
 				return { status: 500, body: "Upload failed" };
 			}
 		} catch (error) {
 			return { status: 401, body: JSON.stringify("unauthorized!") };
+		}
+
+		//console.log(payload);
+
+		// Table storage upload
+
+		try {
+			let tableName = "PokemonGuesserProfileImages";
+			const tableCredential = new AzureNamedKeyCredential(account, accountKey);
+			const client = new TableClient(
+				`https://${account}.table.core.windows.net`,
+				tableName,
+				tableCredential,
+			);
+
+			await client.upsertEntity({
+				partitionKey: "profileimages",
+				rowKey: username,
+				imageName: randomizedImageName,
+				date: new Date().toISOString(),
+			});
+
+			console.log("table storage upload ok");
+			return { status: 200, body: "ok" };
+		} catch (err) {
+			context.log.error(err);
+			return { status: 500, body: "Error adding score" };
 		}
 
 		/*
