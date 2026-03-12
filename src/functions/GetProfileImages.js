@@ -5,7 +5,50 @@ require("dotenv").config();
 app.http("GetProfileImages", {
 	methods: ["GET"],
 	authLevel: "anonymous",
-	route: "profileimages", // Endpoint: /api/highscores
+	route: "profileimages/{username}",
+	handler: async (request, context) => {
+		const account = process.env.STORAGE_ACCOUNT_NAME;
+		const accountKey = process.env.STORAGE_ACCOUNT_KEY;
+		const tableName = "PokemonGuesserProfileImages";
+
+		const username = request.params.username;
+
+		if (!account || !accountKey) {
+			return { status: 500, body: "Storage account keys are missing." };
+		}
+
+		const credential = new AzureNamedKeyCredential(account, accountKey);
+		const client = new TableClient(
+			`https://${account}.table.core.windows.net`,
+			tableName,
+			credential,
+		);
+
+		try {
+			const entities = client.listEntities({
+				queryOptions: { filter: `RowKey eq '${username}'` },
+			});
+
+			const results = [];
+			for await (const entity of entities) {
+				console.log(entity.rowKey, entity.imageName, entity.date);
+				results.push({
+					username: entity.rowKey,
+					image: entity.imageName,
+					date: entity.date,
+				});
+			}
+
+			console.log(results);
+
+			return { status: 200, jsonBody: results };
+		} catch (error) {
+			return { status: 500, jsonBody: "error" };
+		}
+	},
+});
+
+/*
 	handler: async (request, context) => {
 		const account = process.env.STORAGE_ACCOUNT_NAME;
 		const accountKey = process.env.STORAGE_ACCOUNT_KEY;
@@ -40,4 +83,5 @@ app.http("GetProfileImages", {
 			return { body: JSON.stringify(results) };
 		} catch (error) {}
 	},
-});
+
+*/
