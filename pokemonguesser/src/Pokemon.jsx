@@ -34,6 +34,8 @@ const Pokemon = () => {
 	const [nickname, setNickname] = useState("");
 	const [finalScore, setFinalScore] = useState();
 
+	const [disabledCard, setDisabledCard] = useState(false)
+
 	const typeColors = {
 		normal: "#A8A77A",
 		fire: "#EE8130",
@@ -56,7 +58,10 @@ const Pokemon = () => {
 	};
 
 	const fetchPokemon = async () => {
-		if (lives <= 0) return;
+		//if (lives <= 0) return;
+
+		setDisabledCard(true);
+
 		const random = Math.floor(Math.random() * 150);
 		const random2 = Math.floor(Math.random() * 150);
 		console.log(random);
@@ -69,6 +74,7 @@ const Pokemon = () => {
 		const result2 = await response2.json();
 		setPokemon(result);
 		setPokemon2(result2);
+		setDisabledCard(false);
 		console.log(result);
 		console.log(result2);
 	};
@@ -97,13 +103,17 @@ const Pokemon = () => {
 		const text = await response.text();
 
 		setLives(3);
-		setScore(0);
+		setScore(0)
+		fetchPokemon();
 	};
 
 	const checkAnswers = async (answer) => {
 		if (lives <= 0) {
 			return;
 		}
+
+		setDisabledCard(true)
+
 
 		const response = await fetch(
 			`${BASEURL}/api/CheckAnswer?name=${pokemon.name}&name2=${pokemon2.name}&answer=${answer}&stat=${randomStat}`,
@@ -134,10 +144,9 @@ const Pokemon = () => {
 	}, []);
 
 	return (
-		<div className="w-50 mx-auto">
+				<Container    className="mt-5">
 			{pokemon && (
-				<Container fluid="sm" className="mt-5">
-					<Row className=" mx-auto gap-1 ">
+					<Row className=" justify-content-center gap-1 ">
 						<h3>
 							Which one has higher{" "}
 							<b
@@ -148,12 +157,14 @@ const Pokemon = () => {
 								{stats[randomStat]}?
 							</b>
 						</h3>
-						<Col className="">
+						<Col xs={5} md={4}  className="">
 							<Row>
 								<Col
 									className="border border-2 border-black rounded pokemon-card"
 									style={{
 										backgroundColor: `${typeColors[pokemon.types[0].type.name]}`,
+										pointerEvents: `${disabledCard ? "none" : "auto"}` 
+
 									}}
 									onClick={() => checkAnswers(1)}
 								>
@@ -167,13 +178,15 @@ const Pokemon = () => {
 								</Col>
 							</Row>
 						</Col>
-						<Col className="">
+						<Col xs={5} md={4}  className="">
 							<Row>
 								<Col
 									className="border border-2 border-black rounded pokemon-card"
 									style={{
 										backgroundColor: `${typeColors[pokemon2.types[0].type.name]}`,
+										pointerEvents: `${disabledCard ? "none" : "auto"}` 
 									}}
+									
 									onClick={() => checkAnswers(2)}
 								>
 									<h2 variant="primary">{pokemon2.name}</h2>
@@ -185,9 +198,10 @@ const Pokemon = () => {
 									)}{" "}
 								</Col>
 							</Row>
-						</Col>
+						</Col >
 						{lives >= 1 ? (
-							<Row className="d-flex w-100 mx-0 bg-success p-3 border border-2 border-black rounded">
+						<Col xs={10} md={8}> 
+							<Row className="d-flex justify-content-center bg-success p-3 border border-2 border-black rounded">
 								<Col xs={12} md={4}>
 									{" "}
 									<h3>Score: {score} </h3>
@@ -202,13 +216,16 @@ const Pokemon = () => {
 									{correct == null && <h3> </h3>}
 								</Col>
 							</Row>
+							</Col>
 						) : (
-							<Row className="bg-warning mx-0 p-3 border border-2 border-black rounded">
+													<Col xs={10} md={8}> 
+
+							<Row className="bg-warning  p-3 border border-2 border-black rounded">
 								<Col className="">
 									{" "}
 									<h3>Game over !</h3>
 									<h5>Final score: {score}</h5>
-									<Button
+									<Button 
 										onClick={() => {
 											setLives(3);
 											setScore(0);
@@ -222,6 +239,8 @@ const Pokemon = () => {
 										onSubmit={(e) => {
 											e.preventDefault();
 											saveToHighscores(nickname, score);
+											fetchPokemon();
+
 										}}
 										className="w-50 mx-auto"
 									>
@@ -241,11 +260,12 @@ const Pokemon = () => {
 									</Form>{" "}
 								</Col>
 							</Row>
+							</Col>
 						)}
 					</Row>
-				</Container>
 			)}
-		</div>
+							</Container>
+
 	);
 };
 

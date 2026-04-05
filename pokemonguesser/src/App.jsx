@@ -71,18 +71,18 @@ function App() {
 	return (
 		<Router>
 			<div className="w-100">
-				<Row className="w-100 mx-0 p-0 border-bottom border-black">
-					<Col xs={12} md={4} className="text-center">
+				<Row style={{minHeight: "100px"}} className="w-100 mx-0 my-3 p-0 border-bottom border-black">
+					<Col xs={12} md={4} className="d-flex align-items-center justify-content-center">
 						<Link to={"/"}>
 							<h2 className="text-center">PokemonGuesser</h2>{" "}
 						</Link>
 					</Col>
-					<Col xs={12} md={4} className="start-0">
+					<Col xs={12} md={4} className="d-flex align-items-center justify-content-center">
 						<Link to={"/Highscores"}>
 							<h2 className="text-center">Highscores</h2>{" "}
 						</Link>
 					</Col>
-					<Col xs={12} md={4}>
+					<Col xs={12} md={4} className="d-flex align-items-center justify-content-center">
 						{" "}
 						{!isLoggedIn ? (
 							<div>
