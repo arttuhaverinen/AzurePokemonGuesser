@@ -23,7 +23,7 @@
 }
 
 .pokemon-card:hover {
-	transform: scale(1.025);
+	transform: scale(1.01);
 	opacity: calc(0.9);
 }
 
