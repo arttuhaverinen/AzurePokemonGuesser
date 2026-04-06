@@ -19,7 +19,7 @@ app.http("GetImageLink", {
 		//const blobName = "Arttu Haverinen+142.webp";
 		const blobName = `${request.params.profilepic}.webp`;
 
-		console.log(blobName);
+		console.log("blob", blobName);
 
 		const sharedKeyCredential = new StorageSharedKeyCredential(
 			account,

@@ -1,7 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import { useEffect } from "react";
-import { Col, Row, Button } from "react-bootstrap";
+import { Col, Row, Button, Image } from "react-bootstrap";
 
 const Highscores = () => {
 	const [highScores, setHighScores] = useState(null);
@@ -51,9 +51,16 @@ const Highscores = () => {
 			</Row>
 			{highScores &&
 				highScores.map((item, index) => (
-					<Row key={index}>
+					<Row className="my-2 align-items-center" key={index}>
 						<Col>{index + 1}</Col>
-						<Col>{item.name}</Col>
+						<Col className=" d-flex justify-content-start align-items-center"> 							
+							<Image
+										className=""
+										src="https://placehold.co/50x50"
+										roundedCircle
+							/> 
+									<span className="mx-2">{item.name}</span> 
+						</Col>
 						<Col>{item.score}</Col>
 						<Col>{new Date(item.date).toLocaleDateString()}</Col>
 					</Row>

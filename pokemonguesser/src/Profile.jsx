@@ -15,12 +15,12 @@ const Profile = () => {
 		let data = await res.json();
 		console.log("res profile", data);
 		let image = data[0].image;
+		console.log(data[1].url)
+		//const imgLink = await fetch(`${BASEURL}/api/imagelink/${image}`);
+		//let imgLinkData = await imgLink.json();
 
-		const imgLink = await fetch(`${BASEURL}/api/imagelink/${image}`);
-		let imgLinkData = await imgLink.json();
-
-		console.log("res profile link", imgLinkData);
-		setProfileImageSAS(imgLinkData.url);
+		//console.log("res profile link", imgLinkData);
+		setProfileImageSAS(data[1].url);
 	};
 
 	useEffect(() => {
