@@ -30,23 +30,34 @@ const Profile = () => {
 	}, []);
 
 	return (
-		<Row className="mx-auto w-75">
+		<Row className="mx-auto w-75 d-flex  justify-content-center align-items-center" >
 			{console.log("SAS", profileImageSAS)}
-			<Col xs={2}>
+			<Col className="mb-5" xs={12} >
+				<h3>Welcome, {username}</h3>
+			</Col>
+			<Col className="" md={12} lg={4}>
 				{" "}
 				<Image
-					className="w-100 my-5 "
+					className="my-5  "
 					src={
 						profileImageSAS ? profileImageSAS : "https://placehold.co/100x100"
 					}
 					roundedCircle
+					height={"200px"}
+					width={"200px"}
 				/>
-				<h5>Upload new profile picture</h5>
-				<UploadImage />
 			</Col>
-			<Col xs={6}>
-				<h3>Welcome, {username}</h3>
+			<Col
+			xs={12} md={4}
+			className="d-flex flex-column justify-content-center align-items-center"
+			>
+			<h5>Upload new profile picture</h5>
+			<UploadImage />
 			</Col>
+			<br />
+			<Col  xs={12}><hr /></Col>
+			<Col><h5>Your personal highscores...</h5></Col>
+
 		</Row>
 	);
 };

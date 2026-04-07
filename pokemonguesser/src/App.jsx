@@ -107,19 +107,18 @@ function App() {
 							</div>
 						) : (
 							<Row className="align-items-center">
-								<Col xs={3}>
+								<Col className="d-flex justify-content-center align-items-center" xs={6} md={6}>
 									<Image
 										className="my-1"
 										src="https://placehold.co/50x50"
 										roundedCircle
 									/>
-								</Col>
-								<Col xs={3}>
 									<Link to={"/Profile"} state={{ username: username }}>
-										<h3 className="text-center">{firstname}</h3>{" "}
+										<h3 className="text-center mx-1">{firstname}</h3>{" "}
 									</Link>{" "}
 								</Col>
-								<Col xs={6}>
+
+								<Col className="d-flex justify-content-center align-items-center" xs={6} md={6}>
 									<Button
 										className="my-1"
 										onClick={() =>
@@ -130,12 +129,7 @@ function App() {
 									>
 										Logout
 									</Button>
-									<Button
-										className="mx-1"
-										onClick={() => testProtectedEndpoint()}
-									>
-										auth test
-									</Button>
+
 								</Col>
 							</Row>
 						)}{" "}

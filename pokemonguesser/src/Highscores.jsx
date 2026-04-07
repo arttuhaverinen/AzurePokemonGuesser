@@ -2,6 +2,7 @@ import React from "react";
 import { useState } from "react";
 import { useEffect } from "react";
 import { Col, Row, Button, Image } from "react-bootstrap";
+import "./App.css";
 
 const Highscores = () => {
 	const [highScores, setHighScores] = useState(null);
@@ -21,7 +22,7 @@ const Highscores = () => {
 	}, []);
 
 	return (
-		<Row className="w-75 mx-auto mb-5">
+		<Row className="w-100 mx-auto mb-5">
 			<Col className="my-3" xs={3}>
 				<h3 className="text-center">Highscores</h3>
 			</Col>
@@ -37,35 +38,34 @@ const Highscores = () => {
 				</Button>
 			</Col>
 			<Row className="w-100 my-3">
-				<Col xs={3} className="">
+				<Col xs={1} md={3} className="">
 					<h4>#</h4>
 				</Col>
-				<Col xs={3}>
+				<Col className=" d-flex justify-content-start align-items-center" xs={6} md={3}>
 					<h4>Name</h4>
 				</Col>
-				<Col xs={3}>
+				<Col xs={2} md={3}>
 					<h4>Score</h4>
 				</Col>
-				<Col xs={3}>
+				<Col xs={3} md={3}>
 					<h4>Date</h4>
 				</Col>
 			</Row>
 			{highScores &&
 				highScores.map((item, index) => (
 					<Row className="my-2 align-items-center" key={index}>
-						<Col><h5>{index + 1}</h5></Col>
-						<Col className=" d-flex justify-content-start align-items-center"> 							
+						<Col xs={1} md={3}><h5>{index + 1}</h5></Col>
+						<Col xs={6} md={3} className=" d-flex justify-content-start align-items-center"> 							
 							<Image
-										className=""
+										className="img-avatar-responsive"
 										src={item.imageUrl ? item.imageUrl : "https://placehold.co/100x100"}
 										roundedCircle
-										width={100}
-										height={100}
+
 							/> 
 									<h5 className="mx-2">{item.name}</h5> 
 						</Col>
-						<Col><h5>{item.score}</h5></Col>
-						<Col><h5>{new Date(item.date).toLocaleDateString()}</h5></Col>
+						<Col xs={2} md={3}><h5>{item.score}</h5></Col>
+						<Col xs={3} md={3}><h5>{new Date(item.date).toLocaleDateString()}</h5></Col>
 					</Row>
 				))}
 		</Row>
