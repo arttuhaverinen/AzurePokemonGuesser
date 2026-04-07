@@ -2,8 +2,15 @@ import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Button, Image, Form } from "react-bootstrap";
 const BASEURL = import.meta.env.VITE_BASEURL;
 const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI;
+import { useMsal } from "@azure/msal-react";
+import { getAccessToken } from "../utils/auth";
 
 const Pokemon = () => {
+
+	const [file, setFile] = useState();
+	const { instance, accounts, inProgress } = useMsal();
+	
+
 	console.log(BASEURL);
 	console.log(REDIRECT_URI);
 	const [pokemon, setPokemon] = useState();
@@ -56,6 +63,24 @@ const Pokemon = () => {
 		steel: "#B7B7CE",
 		fairy: "#D685AD",
 	};
+	
+	/*
+	const testAuth = async () => {
+		console.log("test auth")
+			const tokenResponse = await instance.acquireTokenSilent({
+				scopes: [`api://add80d4e-e2b7-4e51-815f-2617074979f6/user_impersonation`],
+				account: accounts[0],
+			});
+		console.log("tokenresponse", tokenResponse);
+		}
+	*/
+	
+
+	const test = async () => {
+		console.log("test")
+		const token = await getAccessToken(instance, accounts);
+		console.log(token)
+	}
 
 	const fetchPokemon = async () => {
 		//if (lives <= 0) return;
@@ -93,13 +118,36 @@ const Pokemon = () => {
 
 		console.log("saving to highscores123");
 
+		// Check if authenticated user
+		const token = await getAccessToken(instance, accounts);
+		console.log("token", token)
+		if (token != null) {
+			console.log("saving to highscores using auth")
 		const response = await fetch(
-			"https://pokemonguesserapi-b4a3e6edf0cyczb4.westeurope-01.azurewebsites.net/api/addhighscore",
+			//"https://pokemonguesserapi-b4a3e6edf0cyczb4.westeurope-01.azurewebsites.net/api/addhighscore",
+			"http://localhost:7071/api/addhighscore",
+			{
+				method: "POST",
+				body: JSON.stringify({ nickname: nickname, score: score }),
+				headers: {
+				Authorization: `Bearer ${token}`,
+			},
+			},
+
+		);
+		} else {
+					const response = await fetch(
+			//"https://pokemonguesserapi-b4a3e6edf0cyczb4.westeurope-01.azurewebsites.net/api/addhighscore",
+			"http://localhost:7071/api/addhighscore",
+
 			{
 				method: "POST",
 				body: JSON.stringify({ nickname: nickname, score: score }),
 			},
+
 		);
+		}
+
 		const text = await response.text();
 
 		setLives(3);
@@ -148,6 +196,8 @@ const Pokemon = () => {
 			{pokemon && (
 					<Row className=" justify-content-center gap-1 ">
 						<h3>
+							<Button onClick={() => test()}>test auth</Button>
+
 							Which one has higher{" "}
 							<b
 								style={{
@@ -239,6 +289,8 @@ const Pokemon = () => {
 										onSubmit={(e) => {
 											e.preventDefault();
 											saveToHighscores(nickname, score);
+											setLives(3);
+											setScore(0);
 											fetchPokemon();
 
 										}}
@@ -262,9 +314,11 @@ const Pokemon = () => {
 							</Row>
 							</Col>
 						)}
+
 					</Row>
 			)}
-							</Container>
+
+			</Container>
 
 	);
 };
