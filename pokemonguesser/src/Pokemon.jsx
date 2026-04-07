@@ -196,7 +196,6 @@ const Pokemon = () => {
 			{pokemon && (
 					<Row className=" justify-content-center gap-1 ">
 						<h3>
-							<Button onClick={() => test()}>test auth</Button>
 
 							Which one has higher{" "}
 							<b
@@ -213,7 +212,8 @@ const Pokemon = () => {
 									className="border border-2 border-black rounded pokemon-card"
 									style={{
 										backgroundColor: `${typeColors[pokemon.types[0].type.name]}`,
-										pointerEvents: `${disabledCard ? "none" : "auto"}` 
+										pointerEvents: `${disabledCard ? "none" : "auto"}`, 
+										minHeight: "200px"
 
 									}}
 									onClick={() => checkAnswers(1)}
@@ -234,7 +234,9 @@ const Pokemon = () => {
 									className="border border-2 border-black rounded pokemon-card"
 									style={{
 										backgroundColor: `${typeColors[pokemon2.types[0].type.name]}`,
-										pointerEvents: `${disabledCard ? "none" : "auto"}` 
+										pointerEvents: `${disabledCard ? "none" : "auto"}` ,
+										minHeight: "200px"
+
 									}}
 									
 									onClick={() => checkAnswers(2)}
@@ -250,8 +252,8 @@ const Pokemon = () => {
 							</Row>
 						</Col >
 						{lives >= 1 ? (
-						<Col xs={10} md={8}> 
-							<Row className="d-flex justify-content-center bg-success p-3 border border-2 border-black rounded">
+						<Col 		 xs={10} md={8}> 
+							<Row style={{minHeight: "200px"}} className="mb-5 d-flex justify-content-center align-items-center bg-light p-3 border border-2 border-black rounded">
 								<Col xs={12} md={4}>
 									{" "}
 									<h3>Score: {score} </h3>
@@ -261,9 +263,9 @@ const Pokemon = () => {
 									<h3>Health: {lives} </h3>
 								</Col>
 								<Col xs={12} md={4}>
-									{correct == true && <h3>Correct!</h3>}
-									{correct == false && <h3>Wrong!</h3>}
-									{correct == null && <h3> </h3>}
+									{correct == true && <h3 className="text-success">Correct!</h3>}
+									{correct == false && <h3 className="text-danger" >Wrong!</h3>}
+									{correct == null && <h3>&nbsp;</h3>}
 								</Col>
 							</Row>
 							</Col>
