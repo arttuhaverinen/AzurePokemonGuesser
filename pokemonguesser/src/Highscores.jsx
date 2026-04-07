@@ -8,8 +8,8 @@ const Highscores = () => {
 
 	const fetchHighscores = async () => {
 		let response = await fetch(
-			//"https://pokemonguesserapi-b4a3e6edf0cyczb4.westeurope-01.azurewebsites.net/api/highscores",
-			"http://localhost:7071/api/highscores",
+			"https://pokemonguesserapi-b4a3e6edf0cyczb4.westeurope-01.azurewebsites.net/api/highscores",
+			//"http://localhost:7071/api/highscores",
 		);
 		let data = await response.json();
 		console.log("data", data);

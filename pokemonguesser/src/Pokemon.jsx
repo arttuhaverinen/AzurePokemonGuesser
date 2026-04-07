@@ -124,8 +124,8 @@ const Pokemon = () => {
 		if (token != null) {
 			console.log("saving to highscores using auth")
 		const response = await fetch(
-			//"https://pokemonguesserapi-b4a3e6edf0cyczb4.westeurope-01.azurewebsites.net/api/addhighscore",
-			"http://localhost:7071/api/addhighscore",
+			"https://pokemonguesserapi-b4a3e6edf0cyczb4.westeurope-01.azurewebsites.net/api/addhighscore",
+			//"http://localhost:7071/api/addhighscore",
 			{
 				method: "POST",
 				body: JSON.stringify({ nickname: nickname, score: score }),
@@ -137,8 +137,8 @@ const Pokemon = () => {
 		);
 		} else {
 					const response = await fetch(
-			//"https://pokemonguesserapi-b4a3e6edf0cyczb4.westeurope-01.azurewebsites.net/api/addhighscore",
-			"http://localhost:7071/api/addhighscore",
+			"https://pokemonguesserapi-b4a3e6edf0cyczb4.westeurope-01.azurewebsites.net/api/addhighscore",
+			//"http://localhost:7071/api/addhighscore",
 
 			{
 				method: "POST",
