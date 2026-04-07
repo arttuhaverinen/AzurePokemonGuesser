@@ -8,7 +8,8 @@ const Highscores = () => {
 
 	const fetchHighscores = async () => {
 		let response = await fetch(
-			"https://pokemonguesserapi-b4a3e6edf0cyczb4.westeurope-01.azurewebsites.net/api/highscores",
+			//"https://pokemonguesserapi-b4a3e6edf0cyczb4.westeurope-01.azurewebsites.net/api/highscores",
+			"http://localhost:7071/api/highscores",
 		);
 		let data = await response.json();
 		console.log("data", data);
@@ -20,7 +21,7 @@ const Highscores = () => {
 	}, []);
 
 	return (
-		<Row className="w-75 mx-auto">
+		<Row className="w-75 mx-auto mb-5">
 			<Col className="my-3" xs={3}>
 				<h3 className="text-center">Highscores</h3>
 			</Col>
@@ -35,7 +36,7 @@ const Highscores = () => {
 					Refresh
 				</Button>
 			</Col>
-			<Row className="w-100">
+			<Row className="w-100 my-3">
 				<Col xs={3} className="">
 					<h4>#</h4>
 				</Col>
@@ -52,17 +53,19 @@ const Highscores = () => {
 			{highScores &&
 				highScores.map((item, index) => (
 					<Row className="my-2 align-items-center" key={index}>
-						<Col>{index + 1}</Col>
+						<Col><h5>{index + 1}</h5></Col>
 						<Col className=" d-flex justify-content-start align-items-center"> 							
 							<Image
 										className=""
-										src="https://placehold.co/50x50"
+										src={item.imageUrl ? item.imageUrl : "https://placehold.co/100x100"}
 										roundedCircle
+										width={100}
+										height={100}
 							/> 
-									<span className="mx-2">{item.name}</span> 
+									<h5 className="mx-2">{item.name}</h5> 
 						</Col>
-						<Col>{item.score}</Col>
-						<Col>{new Date(item.date).toLocaleDateString()}</Col>
+						<Col><h5>{item.score}</h5></Col>
+						<Col><h5>{new Date(item.date).toLocaleDateString()}</h5></Col>
 					</Row>
 				))}
 		</Row>

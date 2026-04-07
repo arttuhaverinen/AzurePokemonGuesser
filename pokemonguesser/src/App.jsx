@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { createContext, useContext } from "react";
+
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
@@ -21,6 +23,10 @@ function App() {
 	const [username, setUsername] = useState();
 	const [firstname, setFirstName] = useState();
 	const [refresh, setRefresh] = useState(true);
+	const [accessToken, setAccessToken] = useState(null);
+
+	const AuthProvider = createContext(null);
+
 
 	useEffect(() => {
 		instance.handleRedirectPromise().then((response) => {
@@ -69,6 +75,7 @@ function App() {
 	};
 
 	return (
+		<AuthProvider>
 		<Router>
 			<div className="w-100">
 				<Row style={{minHeight: "100px"}} className="w-100 mx-0 my-3 p-0 border-bottom border-black">
@@ -142,6 +149,7 @@ function App() {
 				<Route path="/Profile" element={<Profile />} />
 			</Routes>
 		</Router>
+		</AuthProvider>
 	);
 }
 
