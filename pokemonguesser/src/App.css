@@ -73,8 +73,8 @@ a:hover {
 }
 
 @media (max-width: 576px) {
-  .img-avatar-responsive {
-    width: 50px;
-    height: 50px;
-  }
+	.img-avatar-responsive {
+		width: 50px;
+		height: 50px;
+	}
 }

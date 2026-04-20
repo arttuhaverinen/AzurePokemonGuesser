@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { createContext, useContext } from "react";
 
 import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
 const VITE_CLIENT_ID = import.meta.env.VITE_CLIENT_ID;
 const BASEURL = import.meta.env.VITE_BASEURL;
@@ -26,7 +25,6 @@ function App() {
 	const [accessToken, setAccessToken] = useState(null);
 
 	const AuthProvider = createContext(null);
-
 
 	useEffect(() => {
 		instance.handleRedirectPromise().then((response) => {
@@ -76,73 +74,95 @@ function App() {
 
 	return (
 		<AuthProvider>
-		<Router>
-			<div className="w-100">
-				<Row style={{minHeight: "100px"}} className="w-100 mx-0 my-3 p-0 border-bottom border-black">
-					<Col xs={12} md={4} className="d-flex align-items-center justify-content-center">
-						<Link to={"/"}>
-							<h2 className="text-center">PokemonGuesser</h2>{" "}
-						</Link>
-					</Col>
-					<Col xs={12} md={4} className="d-flex align-items-center justify-content-center">
-						<Link to={"/Highscores"}>
-							<h2 className="text-center">Highscores</h2>{" "}
-						</Link>
-					</Col>
-					<Col xs={12} md={4} className="d-flex align-items-center justify-content-center">
-						{" "}
-						{!isLoggedIn ? (
-							<div>
-								<Button
-									className="my-1"
-									onClick={() =>
-										instance.loginRedirect({
-											scopes: ["openid", "profile", "email"],
-											extraQueryParameters: { prompt: "select_account" },
-										})
-									}
-								>
-									Login
-								</Button>
-							</div>
-						) : (
-							<Row className="align-items-center">
-								<Col className="d-flex justify-content-center align-items-center" xs={6} md={6}>
-									<Image
-										className="my-1"
-										src="https://placehold.co/50x50"
-										roundedCircle
-									/>
-									<Link to={"/Profile"} state={{ username: username }}>
-										<h3 className="text-center mx-1">{firstname}</h3>{" "}
-									</Link>{" "}
-								</Col>
-
-								<Col className="d-flex justify-content-center align-items-center" xs={6} md={6}>
+			<Router>
+				<div className="w-100">
+					<Row
+						style={{ minHeight: "100px" }}
+						className="w-100 mx-0 my-3 p-0 border-bottom border-black"
+					>
+						<Col
+							xs={12}
+							md={4}
+							className="d-flex align-items-center justify-content-center"
+						>
+							<Link to={"/"}>
+								<h2 className="text-center">PokemonGuesser</h2>{" "}
+							</Link>
+						</Col>
+						<Col
+							xs={12}
+							md={4}
+							className="d-flex align-items-center justify-content-center"
+						>
+							<Link to={"/Highscores"}>
+								<h2 className="text-center">Highscores</h2>{" "}
+							</Link>
+						</Col>
+						<Col
+							xs={12}
+							md={4}
+							className="d-flex align-items-center justify-content-center"
+						>
+							{" "}
+							{!isLoggedIn ? (
+								<div>
 									<Button
 										className="my-1"
 										onClick={() =>
-											instance.logoutRedirect({
-												postLogoutRedirectUri: "/",
+											instance.loginRedirect({
+												scopes: ["openid", "profile", "email"],
+												extraQueryParameters: { prompt: "select_account" },
 											})
 										}
 									>
-										Logout
+										Login
 									</Button>
+								</div>
+							) : (
+								<Row className="align-items-center">
+									<Col
+										className="d-flex justify-content-center align-items-center"
+										xs={6}
+										md={6}
+									>
+										<Image
+											className="my-1"
+											src="https://placehold.co/50x50"
+											roundedCircle
+										/>
+										<Link to={"/Profile"} state={{ username: username }}>
+											<h3 className="text-center mx-1">{firstname}</h3>{" "}
+										</Link>{" "}
+									</Col>
 
-								</Col>
-							</Row>
-						)}{" "}
-					</Col>
-				</Row>
-			</div>
-			<Row className="my-5"></Row>
-			<Routes>
-				<Route path="/" element={<Pokemon />} />
-				<Route path="/Highscores" element={<Highscores />} />
-				<Route path="/Profile" element={<Profile />} />
-			</Routes>
-		</Router>
+									<Col
+										className="d-flex justify-content-center align-items-center"
+										xs={6}
+										md={6}
+									>
+										<Button
+											className="my-1"
+											onClick={() =>
+												instance.logoutRedirect({
+													postLogoutRedirectUri: "/",
+												})
+											}
+										>
+											Logout
+										</Button>
+									</Col>
+								</Row>
+							)}{" "}
+						</Col>
+					</Row>
+				</div>
+				<Row className="my-5"></Row>
+				<Routes>
+					<Route path="/" element={<Pokemon />} />
+					<Route path="/Highscores" element={<Highscores />} />
+					<Route path="/Profile" element={<Profile />} />
+				</Routes>
+			</Router>
 		</AuthProvider>
 	);
 }
